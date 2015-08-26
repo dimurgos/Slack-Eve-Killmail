@@ -1,11 +1,12 @@
 import urllib2
 import urllib
-import hashlib
 import json
 import sys
 import exceptions
 import locale
 import config
+import systems
+import ships
 from datetime import datetime
 import time
 
@@ -31,6 +32,7 @@ def run_killboard(config_type, config_id):
             if str(kill_id) in handled_kills:
                 continue
             
+            highestDealer = None
             killer = {}
             attackerCount = 0
             highestDmg = 0
@@ -41,7 +43,7 @@ def run_killboard(config_type, config_id):
                     attackerCount += 1
                 else:
                     continue
-                if attacker['damageDone'] > highestDmg:
+                if attacker['characterID'] != 0 and attacker['damageDone'] > highestDmg:
                     highestDmg = attacker['damageDone']
                     highestDealer = attacker
 
@@ -51,7 +53,7 @@ def run_killboard(config_type, config_id):
             damageTaken = {}
             kill = {}
             if killer['characterID'] == 0:
-                kill['fallback'] = 'POS killed {0} ({1})'.format(victim['characterName'], victim['corporationName'])
+                kill['fallback'] = '{0} killed {1} ({2})'.format(ships.get_ship_by_id(killer['shipTypeID']), victim['characterName'], victim['corporationName'])
                 kill['color'] = 'good'
                 damageTaken['title'] = "Damage dealt"
             elif victim[config_type] == config_id:
@@ -79,7 +81,11 @@ def run_killboard(config_type, config_id):
                 mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(highestDealer['characterID'], highestDealer['characterName'], locale.format('%d', highestDmg, grouping=True))
                 mostDmg['short'] = "true"
             
-            kill['fields'] = [damageTaken, value, totalAttackers, mostDmg]
+            solarSystemName,security = systems.get_system_by_id(record['solarSystemID'])
+            system = {'title': 'System', 'value': '<https://zkillboard.com/system/{0}|{1}> ({2:.1g})'.format(record['solarSystemID'], solarSystemName, security), 'short': 'true'}
+            ship = {'title': 'Ship', 'value': '{0}'.format(ships.get_ship_by_id(victim['shipTypeID'])), 'short': 'true'}
+            
+            kill['fields'] = [damageTaken, value, totalAttackers, mostDmg, system, ship]
             
             attachment['attachments'] = [kill]
             
@@ -95,6 +101,8 @@ def run_killboard(config_type, config_id):
         except urllib2.HTTPError as e:
             print "Exception in processing record: " + e.reason
         except exceptions.KeyError as e:
+            print "Exception in processing record: " + str(e)
+        except exceptions.NameError as e:
             print "Exception in processing record: " + str(e)
         except:
             print "Exception in processing record" + str(sys.exc_info()[0])
