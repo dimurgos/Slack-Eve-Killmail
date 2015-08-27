@@ -52,16 +52,22 @@ def run_killboard(config_type, config_id):
             attachment = {}
             damageTaken = {}
             kill = {}
+            
             if killer['characterID'] == 0:
-                kill['fallback'] = '{0} killed {1} ({2})'.format(ships.get_ship_by_id(killer['shipTypeID']), victim['characterName'], victim['corporationName'])
-                kill['color'] = 'good'
-                damageTaken['title'] = "Damage dealt"
-            elif victim[config_type] == config_id:
-                kill['fallback'] = '{0} got killed by {1} ({2})'.format(victim['characterName'], killer['characterName'], killer['corporationName'])
+                killerName = killer['shipTypeID']
+            else:
+                killerName = killer['characterName']
+            if victim['characterID'] == 0:
+                victimName = victim['shipTypeID']
+            else:
+                victimName = victim['characterName']
+            
+            if victim[config_type] == config_id:
+                kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killer['characterName'], killer['corporationName'])
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
-                kill['fallback'] = '{0} killed {1} ({2})'.format(killer['characterName'], victim['characterName'], victim['corporationName'])
+                kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victim['characterName'], victim['corporationName'])
                 kill['color'] = 'good'
                 damageTaken['title'] = "Damage dealt"
 
