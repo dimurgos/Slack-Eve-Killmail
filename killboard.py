@@ -78,7 +78,7 @@ def run_killboard(config_type, config_id):
             damageTaken['value'] = locale.format('%d', victim['damageTaken'], grouping=True)
             damageTaken['short'] = "true"
             
-            value = {'title': 'Value', 'value': locale.format('%d', record['zkb']['totalValue'], grouping=True) + ' ISK', 'short': 'true'}
+            value = {'title': 'Value', 'value': locale.format('%d', record['zkb']['totalValue'], grouping=True) + ' ISK', 'short': False}
             totalAttackers = {'title': 'Pilots involved', 'value': str(attackerCount), 'short': 'true'}
 
             mostDmg = {}
@@ -87,11 +87,18 @@ def run_killboard(config_type, config_id):
                 mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(highestDealer['characterID'], highestDealer['characterName'], locale.format('%d', highestDmg, grouping=True))
                 mostDmg['short'] = "true"
             
-            solarSystemName,security = systems.get_system_by_id(record['solarSystemID'])
-            system = {'title': 'System', 'value': '<https://zkillboard.com/system/{0}|{1}> ({2:.1g})'.format(record['solarSystemID'], solarSystemName, security), 'short': 'true'}
+            solarSystemName,regionID,regionName,constellationName,security = systems.get_system_by_id(record['solarSystemID'])
+            system = {'title': 'System', 'value': '<https://zkillboard.com/system/{systemID}|{systemName}> ({security:.1g}) / <https://zkillboard.com/region/{regionID}|{regionName}> / {constellationName}'.format(
+                systemID = record['solarSystemID'], 
+                systemName = solarSystemName, 
+                security = security,
+                regionName = regionName,
+                regionID = regionID,
+                constellationName = constellationName
+            ), 'short': False}
             ship = {'title': 'Ship', 'value': '{0}'.format(ships.get_ship_by_id(victim['shipTypeID'])), 'short': 'true'}
             
-            kill['fields'] = [damageTaken, value, totalAttackers, mostDmg, system, ship]
+            kill['fields'] = [damageTaken, totalAttackers, mostDmg, ship, value, system]
             
             attachment['attachments'] = [kill]
             
