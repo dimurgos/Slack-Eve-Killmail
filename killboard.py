@@ -35,14 +35,14 @@ def run_killboard(config_type, config_id):
             highestDealer = None
             killer = {}
             attackerCount = 0
-            highestDmg = 0
+            highestDmg = -1
             for attacker in record['attackers']:
                 if attacker['finalBlow'] == 1:
                     killer = attacker
-                if attacker['factionID'] == 0:
-                    attackerCount += 1
-                else:
+                if attacker['characterID'] == 0 and attacker['factionID'] != 0:
                     continue
+                else:
+                    attackerCount += 1
                 if attacker['characterID'] != 0 and attacker['damageDone'] > highestDmg:
                     highestDmg = attacker['damageDone']
                     highestDealer = attacker
