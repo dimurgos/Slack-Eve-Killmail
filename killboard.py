@@ -122,12 +122,13 @@ def run_killboard(config_type, config_id):
         
     f.close()
     
-    time.sleep(config.config_sleep_time)
-
 while True:
     try:
-        for key,val in config.config_owner.items():
-            run_killboard(key, val)
+        for group in config.config_owner:
+            for key,val in group.items():
+                run_killboard(key, val)
+            time.sleep(60)
+        time.sleep(config.config_sleep_time)
     except urllib2.HTTPError as e:
         print "Exception in processing killboard data: " + e.reason
         time.sleep(60)
