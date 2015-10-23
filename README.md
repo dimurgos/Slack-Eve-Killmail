@@ -33,3 +33,6 @@
 * Every 20 minutes the list of kills over the last day will be posted in the configured Slack channel
 * Posts if it is a loss or a kill (green for kill, red for loss)
 * Includes damage dealt, pilots involved, ship, value, system and most damage done
+
+## Example
+![example](docs/killmails.png?raw=true)
