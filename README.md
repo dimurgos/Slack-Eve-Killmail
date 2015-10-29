@@ -2,15 +2,12 @@
 
 ## Requirements
 * Slack
-* Python 2 (w/ sqlite 3)
-* [EVE Static Data Export (SDE)](https://developers.eveonline.com/resource/static-data-export)
-	* Only universeDataDx.db is a requirement
+* Python 2
 
 ## Install Instructions
 * In Slack, go to /services/new, select Incoming WebHooks. 
 	* Fill in channel/name
 	* Copy URL in config.py in the config\_slack\_url
-* After Github clone, place universeDataDx.db in the cloned folder (or where ever you installed the script)
 * In config.py configure which alliances to track
 	* Format is dictionary in array
 	* Each dictionary in the array is a separate corporation or alliance to track

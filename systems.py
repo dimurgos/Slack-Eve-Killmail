@@ -1,17 +1,15 @@
-import sqlite3
+import util
+
+region_list = {}
 
 def get_system_by_id(id):
-    conn = sqlite3.connect('universeDataDx.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT mapSolarSystems.solarSystemName, mapRegions.regionID, mapRegions.regionName, mapConstellations.constellationName, mapSolarSystems.security FROM mapSolarSystems INNER JOIN mapConstellations ON mapConstellations.constellationID = mapSolarSystems.constellationID INNER JOIN mapRegions ON mapRegions.regionID = mapSolarSystems.regionID WHERE solarSystemID = ?', (str(id),));
-    result = cursor.fetchone()
-    conn.close()
-    return result
-#conn = sqlite3.connect('universeDataDx.db')
-#cursor = conn.cursor()
-#cursor.execute('SELECT mapSolarSystems.solarSystemName, mapRegions.regionID, mapRegions.regionName, mapConstellations.constellationName, mapSolarSystems.security FROM mapSolarSystems INNER JOIN mapConstellations ON mapConstellations.constellationID = mapSolarSystems.constellationID INNER JOIN mapRegions ON mapRegions.regionID = mapSolarSystems.regionID WHERE solarSystemID = ?', (str(30003855),));
-#result = cursor.fetchone()
-#print result
-#conn.close()
+    if id in region_list:
+        return region_list[id]
 
-#SELECT mapSolarSystems.solarSystemName, mapRegions.regionName, mapConstellations.constellationName, mapSolarSystems.security FROM mapSolarSystems INNER JOIN mapConstellations ON mapConstellations.constellationID = mapSolarSystems.constellationID INNER JOIN mapRegions ON mapRegions.regionID = mapSolarSystems.regionID WHERE solarSystemID = ?
+    solarsystem = util.get_public_crest_data('solarsystems', id)
+    constellation = util.get_public_crest_data_href(solarsystem['constellation']['href'])
+    region = util.get_public_crest_data_href(constellation['region']['href'])
+    
+    region_info = (solarsystem['name'], int(constellation['region']['href'].split('/')[4]), region['name'], constellation['name'], solarsystem['securityStatus'])
+    region_list[id] = region_info
+    return region_info
