@@ -13,5 +13,3 @@ def get_system_by_id(id):
     region_info = (solarsystem['name'], int(constellation['region']['href'].split('/')[4]), region['name'], constellation['name'], solarsystem['securityStatus'])
     region_list[id] = region_info
     return region_info
-
-print get_system_by_id(31000007)
