@@ -7,9 +7,11 @@ def get_system_by_id(id):
         return region_list[id]
 
     solarsystem = util.get_public_crest_data('solarsystems', id)
-    constellation = util.get_public_crest_data_href(solarsystem['constellation']['href'])
-    region = util.get_public_crest_data_href(constellation['region']['href'])
+    constellation = util.get_public_crest_data_href('constellations', solarsystem['constellation']['href'])
+    region = util.get_public_crest_data_href('regions', constellation['region']['href'])
     
     region_info = (solarsystem['name'], int(constellation['region']['href'].split('/')[4]), region['name'], constellation['name'], solarsystem['securityStatus'])
     region_list[id] = region_info
     return region_info
+
+print get_system_by_id(31000007)
