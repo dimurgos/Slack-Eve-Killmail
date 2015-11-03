@@ -13,7 +13,7 @@ import time
 def run_killboard(config_type, config_id):
     kills = 'https://zkillboard.com/api/{0}/{1}/pastSeconds/{2}/'.format(config_type, config_id, config.config_check)
 
-    locale.setlocale(locale.LC_ALL,'en_US')
+    locale.setlocale(locale.LC_ALL, config.config_locale)
 
     request = urllib2.Request(kills)
     request.add_header('User-Agent', config.config_header)

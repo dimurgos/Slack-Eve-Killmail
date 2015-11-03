@@ -3,3 +3,5 @@ config_owner = [{'': 0}] # Format of: 'corporationID': <id> or 'allianceID': <id
 config_check = '86400' # Check for the last day
 config_sleep_time = 1200 # Delay between checks
 config_slack_url = 'https://hooks.slack.com/services/' # Slack integration code
+#config_locale = 'English_United States' # Windows locale
+config_locale = 'en_US' # Linux locale
