@@ -112,13 +112,13 @@ def run_killboard(config_type, config_id):
             time.sleep(2)
             f.write('{0}\n'.format(kill_id))
         except urllib2.HTTPError as e:
-            print "Exception in processing record: " + str(e.reason)
+            print "HTTPError in processing record: " + str(e.reason)
         except exceptions.KeyError as e:
-            print "Exception in processing record: " + str(e)
+            print "KeyError in processing record: " + str(e)
         except exceptions.NameError as e:
-            print "Exception in processing record: " + str(e)
+            print "NameError in processing record: " + str(e)
         except Exception:
-            print "Exception in processing record" + str(sys.exc_info()[0])
+            print "Generic Exception in processing record: " + str(sys.exc_info()[0]) + " (" + str(sys.exc_info()[1]) + ")"
         
     f.close()
     
@@ -130,8 +130,8 @@ while True:
             time.sleep(60)
         time.sleep(config.config_sleep_time)
     except urllib2.HTTPError as e:
-        print "Exception in processing killboard data: " + str(e.reason)
+        print "HTTPError in processing killboard data: " + str(e.reason)
         time.sleep(60)
     except Exception:
-    	print "Exception in processing record" + str(sys.exc_info()[0])
-    	time.sleep(60)
+        print "Exception in processing killboard data: " + str(sys.exc_info()[0]) + " (" + str(sys.exc_info()[1]) + ")"
+        time.sleep(60)
