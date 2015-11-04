@@ -25,6 +25,7 @@
 * config\_check = '86400' # Check for the last day (maximal retrieval amount)
 * config\_sleep\_time = 1200 # Delay between checks (20 minutes default)
 * config\_slack\_url = 'https://hooks.slack.com/services/' # Slack integration code
+* config\_locale = 'en_US' # The locale to post ISK values in
 
 ## Result
 * Every 20 minutes the list of kills over the last day will be posted in the configured Slack channel
@@ -33,3 +34,12 @@
 
 ## Example
 ![example](docs/killmails.png?raw=true)
+
+## Solutions for possible issues
+* 'locale.Error'
+	* If this happens, check your locales if the current configured value is supported. Some possible values have been added as suggestions.
+* 'IOError'
+	* Usually relates to missing database file 'handled_kills.dat', create if not available.
+* Exception in processing record: '(corp id)' 
+	* Check if config\_owner is configured like follows: 
+		* config\_owner = [{'corporationID': (corp id)}]
