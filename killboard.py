@@ -140,8 +140,10 @@ def signal_handler(signal, frame):
     os.remove('/var/run/kbbot.pid')
     exit()
 
-make_pid()
-signal.signal(signal.SIGINT, signal_handler)
+if config.config_run_as_daemon:
+	make_pid()
+	signal.signal(signal.SIGINT, signal_handler)
+
 while True:
     try:
         for group in config.config_owner:
