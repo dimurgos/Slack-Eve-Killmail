@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import urllib2
 import urllib
 import json
@@ -9,6 +10,8 @@ import systems
 import ships
 from datetime import datetime
 import time
+import os
+import signal
 
 def run_killboard(config_type, config_id):
     kills = 'https://zkillboard.com/api/{0}/{1}/pastSeconds/{2}/'.format(config_type, config_id, config.config_check)
@@ -122,6 +125,23 @@ def run_killboard(config_type, config_id):
         
     f.close()
     
+def make_pid():
+    try:
+        os.stat('/var/run')
+    except:
+        os.mkdir('/var/run')
+    f = open('/var/run/kbbot.pid', 'w+')
+    f.truncate()
+    f.write(str(os.getpid()))
+    f.write("\n");
+    f.close()
+
+def signal_handler(signal, frame):
+    os.remove('/var/run/kbbot.pid')
+    exit()
+
+make_pid()
+signal.signal(signal.SIGINT, signal_handler)
 while True:
     try:
         for group in config.config_owner:

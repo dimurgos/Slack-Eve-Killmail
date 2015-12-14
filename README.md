@@ -17,7 +17,7 @@
 		* Search your corp/alliance
 		* ID is in URL behind /corporation/ or /alliance/
 * If you haven't already, bind corporation API key to zkillboard to get all kills listed
-* Run using _python killboard.py_
+* If on ubuntu, copy or symlink scripts/ubuntu.init to /etc/init.d/kbbot and run `update-rc.d kbbot defaults`
 
 ## Configurable fields
 * config\_header = 'Slack-Eve-Killboard/1.0a https://github.com/dimurgos/Slack-Eve-Killmail' # header

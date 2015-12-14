@@ -1,0 +1,37 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:        kbbot
+# Default-Start:   2 3 4 5
+# Default-Stop:    1
+# Short-Description: Start kbbot daemon
+### END INIT INFO
+
+DAEMON=/opt/Slack-Eve-Killmail/killboard.py
+PIDFILE=/var/run/kbbot.pid
+
+test -x $DAEMON || exit 5
+
+. /lib/lsb/init-functions
+
+case $1 in
+	start)
+		log_daemon_msg "Starting kbbot" "kbbot"
+  		start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --startas $DAEMON --background
+		status=$?
+		log_end_msg $?
+  		;;
+	stop)
+		log_daemon_msg "Stopping kbbot" "kbbot"
+  		start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+		log_end_msg $?
+		rm -f $PIDFILE
+  		;;
+	restart)
+		$0 stop && sleep 2 && $0 start
+  		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 2
+		;;
+esac
