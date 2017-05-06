@@ -25,7 +25,9 @@
 * config\_check = '86400' # Check for the last day (maximal retrieval amount)
 * config\_sleep\_time = 1200 # Delay between checks (20 minutes default)
 * config\_slack\_url = 'https://hooks.slack.com/services/' # Slack integration code
-* config\_locale = 'en_US' # The locale to post ISK values in
+* config\_locale = 'en\_US' # The locale to post ISK values in
+* config\_run\_as\_daemon = False # Tries to run as daemon instead of keeping the application alive
+* config\_show\_participating = False # True shows the top 10 participating pilots on the kills that are part of your corporation or alliance (default to False), see example below.
 
 ## Result
 * Every 20 minutes the list of kills over the last day will be posted in the configured Slack channel
@@ -34,6 +36,7 @@
 
 ## Example
 ![example](docs/killmails.png?raw=true)
+![example](docs/multi\_kill\_example.png?raw=true)
 
 ## Solutions for possible issues
 * 'locale.Error'
