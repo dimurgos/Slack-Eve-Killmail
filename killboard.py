@@ -115,7 +115,8 @@ def run_killboard(config_type, config_id):
             		attacker_name = {'title': 'Attacker', 'value': attacker['characterName'], 'short': 'true'}
             		attacker_damage = {'title': 'Damage Done', 'value': locale.format('%d', attacker['damageDone'], grouping=True), 'short': 'true'}
             		attachment['attachments'].append({'color': kill['color'], 'fields': [attacker_name, attacker_damage], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(attacker['corporationID'])})
-            		if ++i == 10:
+            		i += 1
+            		if i == 10:
             			break
             else:
             	kill['fields'] = [damageTaken, totalAttackers, mostDmg, ship, value, system]
