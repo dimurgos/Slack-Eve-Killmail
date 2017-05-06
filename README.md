@@ -34,8 +34,10 @@
 * Posts if it is a loss or a kill (green for kill, red for loss)
 * Includes damage dealt, pilots involved, ship, value, system and most damage done
 
-## Example
+## Example config\_show\_participating = False
 ![example](docs/killmails.png?raw=true)
+
+## Example config\_show\_participating = True
 ![example](docs/multi\_kill\_example.png?raw=true)
 
 ## Solutions for possible issues
