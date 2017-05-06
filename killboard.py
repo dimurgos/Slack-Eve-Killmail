@@ -35,6 +35,7 @@ def run_killboard(config_type, config_id):
             if str(kill_id) in handled_kills:
                 continue
             
+            killers = []
             highestDealer = None
             killer = {}
             attackerCount = 0
@@ -49,6 +50,8 @@ def run_killboard(config_type, config_id):
                 if attacker['characterID'] != 0 and attacker['damageDone'] > highestDmg:
                     highestDmg = attacker['damageDone']
                     highestDealer = attacker
+                if config.config_show_participating and attacker[config_type] == config_id:
+                	killers.append({'characterName': attacker['characterName'], 'corporationID': attacker['corporationID'], 'damageDone': attacker['damageDone']})
 
             victim = record['victim']
 
@@ -101,9 +104,22 @@ def run_killboard(config_type, config_id):
             ), 'short': False}
             ship = {'title': 'Ship', 'value': '{0}'.format(ships.get_ship_by_id(victim['shipTypeID'])), 'short': 'true'}
             
-            kill['fields'] = [damageTaken, totalAttackers, mostDmg, ship, value, system]
-            
-            attachment['attachments'] = [kill]
+            if config.config_show_participating:
+            	row_damage = {'fallback': kill['fallback'], 'color': kill['color'], 'title': kill['title'], 'title_link': kill['title_link'], 'fields': [damageTaken, totalAttackers], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(victim['corporationID'])}
+            	row_ship = {'color': kill['color'], 'fields': [mostDmg, ship], 'thumb_url': kill['thumb_url']}
+            	row_value = {'color': kill['color'], 'fields': [value]}
+            	row_system = {'color': kill['color'], 'fields': [system]}
+            	attachment['attachments'] = [row_damage, row_ship, row_value, row_system]
+            	i = 0
+            	for attacker in killers:
+            		attacker_name = {'title': 'Attacker', 'value': attacker['characterName'], 'short': 'true'}
+            		attacker_damage = {'title': 'Damage Done', 'value': locale.format('%d', attacker['damageDone'], grouping=True), 'short': 'true'}
+            		attachment['attachments'].append({'color': kill['color'], 'fields': [attacker_name, attacker_damage], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(attacker['corporationID'])})
+            		if ++i == 10:
+            			break
+            else:
+            	kill['fields'] = [damageTaken, totalAttackers, mostDmg, ship, value, system]
+            	attachment['attachments'] = [kill]
             
             payload = json.dumps(attachment)
             
