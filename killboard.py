@@ -70,14 +70,22 @@ def run_killboard(config_type, config_id):
             
             if victim[config_type] == config_id:
             	if config.config_extended_name: 
-                	kill['fallback'] = '{0} ({1}) got killed by {2} ({3}) ({4})'.format(victimName, victim['corporationName'], killerName, killer['corporationName'], killer['allianceName'])
+            		if killer['allianceName'] == '':
+            			allianceName = ''
+            		else:
+            			allianceName = ' ({0})'.format(killer['allianceName'])
+                	kill['fallback'] = '{0} ({1}) got killed by {2} ({3}){4}'.format(victimName, victim['corporationName'], killerName, killer['corporationName'], allianceName)
                 else:
                 	kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporationName'])
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
             	if config.config_extended_name: 
-                	kill['fallback'] = '{0} ({1}) killed {2} ({3}) ({4})'.format(killerName, killer['corporationName'], victimName, victim['corporationName'], victim['allianceName'])
+            		if victim['allianceName'] == '':
+            			allianceName = ''
+            		else:
+            			allianceName = ' ({0})'.format(victim['allianceName'])
+                	kill['fallback'] = '{0} ({1}) killed {2} ({3}){4}'.format(killerName, killer['corporationName'], victimName, victim['corporationName'], allianceName)
                 else:
                 	kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporationName'])
                 kill['color'] = 'good'
