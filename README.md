@@ -41,6 +41,9 @@
 ## Example config\_show\_participating = True
 ![example](docs/multi\_kill\_example.png?raw=true)
 
+## Example config\_extended\_name = True
+![example](docs/extended\_names.png?raw=true)
+
 ## Solutions for possible issues
 * 'locale.Error'
 	* If this happens, check your locales if the current configured value is supported. Some possible values have been added as suggestions.
