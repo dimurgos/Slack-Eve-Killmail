@@ -70,14 +70,14 @@ def run_killboard(config_type, config_id):
             
             if victim[config_type] == config_id:
             	if config.config_extended_name: 
-                	kill['fallback'] = '{0} ({1}) got killed by {2} ({3})'.format(victimName, victim['corporationName'], killerName, killer['corporationName'])
+                	kill['fallback'] = '{0} ({1}) got killed by {2} ({3}) ({4})'.format(victimName, victim['corporationName'], killerName, killer['corporationName'], killer['allianceName'])
                 else:
                 	kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporationName'])
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
             	if config.config_extended_name: 
-                	kill['fallback'] = '{0} ({1}) killed {2} ({3})'.format(killerName, killer['corporationName'], victimName, victim['corporationName'])
+                	kill['fallback'] = '{0} ({1}) killed {2} ({3}) ({4})'.format(killerName, killer['corporationName'], victimName, victim['corporationName'], victim['allianceName'])
                 else:
                 	kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporationName'])
                 kill['color'] = 'good'
