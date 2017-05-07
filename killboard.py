@@ -51,7 +51,7 @@ def run_killboard(config_type, config_id):
                     highestDmg = attacker['damageDone']
                     highestDealer = attacker
                 if config.config_show_participating and attacker[config_type] == config_id:
-                	killers.append({'characterName': attacker['characterName'], 'corporationID': attacker['corporationID'], 'damageDone': attacker['damageDone']})
+                	killers.append({'characterName': attacker['characterName'], 'characterID': attacker['characterID'], 'corporationName': attacker['corporationName'], 'corporationID': attacker['corporationID'], 'damageDone': attacker['damageDone']})
 
             victim = record['victim']
 
@@ -69,11 +69,17 @@ def run_killboard(config_type, config_id):
                 victimName = victim['characterName']
             
             if victim[config_type] == config_id:
-                kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporationName'])
+            	if config.config_extended_name: 
+                	kill['fallback'] = '{0} ({1}) got killed by {2} ({3})'.format(victimName, victim['corporationName'], killerName, killer['corporationName'])
+                else:
+                	kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporationName'])
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
-                kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporationName'])
+            	if config.config_extended_name: 
+                	kill['fallback'] = '{0} ({1}) killed {2} ({3})'.format(killerName, killer['corporationName'], victimName, victim['corporationName'])
+                else:
+                	kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporationName'])
                 kill['color'] = 'good'
                 damageTaken['title'] = "Damage dealt"
 
@@ -112,7 +118,7 @@ def run_killboard(config_type, config_id):
             	attachment['attachments'] = [row_damage, row_ship, row_value, row_system]
             	i = 0
             	for attacker in killers:
-            		attacker_name = {'title': 'Attacker', 'value': attacker['characterName'], 'short': 'true'}
+            		attacker_name = {'title': 'Attacker', 'value': '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(attacker['characterID'], attacker['characterName'], attacker['corporationName']), 'short': 'true'}
             		attacker_damage = {'title': 'Damage Done', 'value': locale.format('%d', attacker['damageDone'], grouping=True), 'short': 'true'}
             		attachment['attachments'].append({'color': kill['color'], 'fields': [attacker_name, attacker_damage], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(attacker['corporationID'])})
             		i += 1
