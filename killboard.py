@@ -8,6 +8,9 @@ import locale
 import config
 import systems
 import ships
+import alliances
+import characters
+import corporations
 from datetime import datetime
 import time
 import os
@@ -16,6 +19,13 @@ import signal
 def run_killboard(config_type, config_id):
     kills = 'https://zkillboard.com/api/{0}/{1}/pastSeconds/{2}/'.format(config_type, config_id, config.config_check)
 
+    if config_type == 'corporationID':
+       config_type = 'corporation_id'
+    if config_type == 'allianceID':
+       config_type = 'alliance_id'
+    if config_type == 'characterID':
+       config_type = 'character_id'
+    
     locale.setlocale(locale.LC_ALL, config.config_locale)
 
     request = urllib2.Request(kills)
@@ -51,46 +61,48 @@ def run_killboard(config_type, config_id):
                     highestDmg = attacker['damage_done']
                     highestDealer = attacker
                 if config.config_show_participating and attacker[config_type] == config_id:
-                    killers.append({'character_name': attacker['character_name'], 'character_id': attacker['character_id'], 'corporation_name': attacker['corporation_name'], 'corporation_id': attacker['corporation_id'], 'damage_done': attacker['damage_done']})
+                    character_name = characters.get_character_by_id(attacker['character_id'])
+                    corporation_name = corporations.get_corporation_by_id(attacker['corporation_id'])
+                    killers.append({'character_name': character_name, 'character_id': attacker['character_id'], 'corporation_name': corporation_name, 'corporation_id': attacker['corporation_id'], 'damage_done': attacker['damage_done']})
 
             victim = record['victim']
 
             attachment = {}
             damageTaken = {}
             kill = {}
-            
+
             if killer['character_id'] == 0:
                 killerName = killer['ship_type_id']
             else:
-                killerName = killer['character_name']
+                killerName = characters.get_character_by_id(killer['character_id'])
             if victim['character_id'] == 0:
                 victimName = victim['ship_type_id']
             else:
-                victimName = victim['character_name']
+                victimName = characters.get_character_by_id(victim['character_id'])
             
             if victim[config_type] == config_id:
                 if config.config_extended_name: 
-                    if killer['alliance_name'] == '':
+                    if 'alliance_id' not in killer:
                         allianceName = ''
                     else:
-                        allianceName = ' ({0})'.format(killer['alliance_name'])
-                    kill['fallback'] = '{0} ({1}) got killed by {2} ({3}){4}'.format(victimName, victim['corporation_name'], killerName, killer['corporation_name'], allianceName)
+                        allianceName = ' ({0})'.format(alliances.get_alliance_by_id(killer['alliance_id']))
+                    kill['fallback'] = '{0} ({1}) got killed by {2} ({3}){4}'.format(victimName, corporations.get_corporation_by_id(victim['corporation_id']), killerName, corporations.get_corporation_by_id(killer['corporation_id']), allianceName)
                 else:
-                    kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporation_name'])
+                    kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, corporations.get_corporation_by_id(killer['corporation_id']))
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
                 if config.config_extended_name: 
-                    if victim['alliance_name'] == '':
+                    if 'alliance_id' not in victim:
                         allianceName = ''
                     else:
-                        allianceName = ' ({0})'.format(victim['alliance_name'])
-                    kill['fallback'] = '{0} ({1}) killed {2} ({3}){4}'.format(killerName, killer['corporation_name'], victimName, victim['corporation_name'], allianceName)
+                        allianceName = ' ({0})'.format(alliances.get_alliance_by_id(victim['alliance_id']))
+                    kill['fallback'] = '{0} ({1}) killed {2} ({3}){4}'.format(killerName, corporations.get_corporation_by_id(killer['corporation_id']), victimName, corporations.get_corporation_by_id(victim['corporation_id']), allianceName)
                 else:
-                    kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporation_name'])
+                    kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, corporations.get_corporation_by_id(victim['corporation_id']))
                 kill['color'] = 'good'
                 damageTaken['title'] = "Damage dealt"
-
+                
             kill['title'] = kill['fallback']
             kill['title_link'] = 'https://zkillboard.com/kill/{0}/'.format(killmail_id)
             kill['thumb_url'] = 'https://imageserver.eveonline.com/Render/{0}_64.png'.format(victim['ship_type_id'])
@@ -98,15 +110,15 @@ def run_killboard(config_type, config_id):
             damageTaken['value'] = locale.format('%d', victim['damage_taken'], grouping=True)
             damageTaken['short'] = "true"
             
-            value = {'title': 'Value', 'value': locale.format('%d', record['zkb']['total_value'], grouping=True) + ' ISK', 'short': False}
+            value = {'title': 'Value', 'value': locale.format('%d', record['zkb']['totalValue'], grouping=True) + ' ISK', 'short': False}
             totalAttackers = {'title': 'Pilots involved', 'value': str(attackerCount), 'short': 'true'}
 
             mostDmg = {}
-            if highestDealer and highestDealer['characterID'] != 0:
+            if highestDealer and highestDealer['character_id'] != 0:
                 mostDmg['title'] = 'Most Damage'
-                mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(highestDealer['character_id'], highestDealer['character_name'], locale.format('%d', highestDmg, grouping=True))
+                mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(highestDealer['character_id'], characters.get_character_by_id(highestDealer['character_id']), locale.format('%d', highestDmg, grouping=True))
                 mostDmg['short'] = "true"
-            
+
             solarSystemName,regionID,regionName,constellationName,security = systems.get_system_by_id(record['solar_system_id'])
             system = {'title': 'System', 'value': '<https://zkillboard.com/system/{systemID}|{systemName}> ({security:.1g}) / <https://zkillboard.com/region/{regionID}|{regionName}> / {constellationName}'.format(
                 systemID = record['solar_system_id'], 
@@ -126,7 +138,7 @@ def run_killboard(config_type, config_id):
                 attachment['attachments'] = [row_damage, row_ship, row_value, row_system]
                 i = 0
                 for attacker in killers:
-                    attacker_name = {'title': 'Attacker', 'value': '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(attacker['character_id'], attacker['character_name'], attacker['corporation_name']), 'short': 'true'}
+                    attacker_name = {'title': 'Attacker', 'value': '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(attacker['character_id'], characters.get_character_by_id(attacker['character_id']), corporations.get_corporation_by_id(attacker['corporation_id'])), 'short': 'true'}
                     attacker_damage = {'title': 'Damage Done', 'value': locale.format('%d', attacker['damage_done'], grouping=True), 'short': 'true'}
                     attachment['attachments'].append({'color': kill['color'], 'fields': [attacker_name, attacker_damage], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(attacker['corporation_id'])})
                     i += 1
