@@ -31,7 +31,7 @@ def run_killboard(config_type, config_id):
 
     for record in root:
         try:
-            kill_id = record['killID']
+            kill_id = record['kill_id']
             if str(kill_id) in handled_kills:
                 continue
             
@@ -41,17 +41,17 @@ def run_killboard(config_type, config_id):
             attackerCount = 0
             highestDmg = -1
             for attacker in record['attackers']:
-                if attacker['finalBlow'] == 1:
+                if attacker['final_blow'] == 1:
                     killer = attacker
-                if attacker['characterID'] == 0 and attacker['factionID'] != 0:
+                if attacker['character_id'] == 0 and attacker['faction_id'] != 0:
                     continue
                 else:
                     attackerCount += 1
-                if attacker['characterID'] != 0 and attacker['damageDone'] > highestDmg:
-                    highestDmg = attacker['damageDone']
+                if attacker['character_id'] != 0 and attacker['damage_done'] > highestDmg:
+                    highestDmg = attacker['damage_done']
                     highestDealer = attacker
                 if config.config_show_participating and attacker[config_type] == config_id:
-                    killers.append({'characterName': attacker['characterName'], 'characterID': attacker['characterID'], 'corporationName': attacker['corporationName'], 'corporationID': attacker['corporationID'], 'damageDone': attacker['damageDone']})
+                    killers.append({'character_name': attacker['character_name'], 'character_id': attacker['character_id'], 'corporation_name': attacker['corporation_name'], 'corporation_id': attacker['corporation_id'], 'damage_done': attacker['damage_done']})
 
             victim = record['victim']
 
@@ -59,76 +59,76 @@ def run_killboard(config_type, config_id):
             damageTaken = {}
             kill = {}
             
-            if killer['characterID'] == 0:
-                killerName = killer['shipTypeID']
+            if killer['character_id'] == 0:
+                killerName = killer['ship_type_id']
             else:
-                killerName = killer['characterName']
-            if victim['characterID'] == 0:
-                victimName = victim['shipTypeID']
+                killerName = killer['character_name']
+            if victim['character_id'] == 0:
+                victimName = victim['ship_type_id']
             else:
-                victimName = victim['characterName']
+                victimName = victim['character_name']
             
             if victim[config_type] == config_id:
                 if config.config_extended_name: 
-                    if killer['allianceName'] == '':
+                    if killer['alliance_name'] == '':
                         allianceName = ''
                     else:
-                        allianceName = ' ({0})'.format(killer['allianceName'])
-                    kill['fallback'] = '{0} ({1}) got killed by {2} ({3}){4}'.format(victimName, victim['corporationName'], killerName, killer['corporationName'], allianceName)
+                        allianceName = ' ({0})'.format(killer['alliance_name'])
+                    kill['fallback'] = '{0} ({1}) got killed by {2} ({3}){4}'.format(victimName, victim['corporation_name'], killerName, killer['corporation_name'], allianceName)
                 else:
-                    kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporationName'])
+                    kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporation_name'])
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
                 if config.config_extended_name: 
-                    if victim['allianceName'] == '':
+                    if victim['alliance_name'] == '':
                         allianceName = ''
                     else:
-                        allianceName = ' ({0})'.format(victim['allianceName'])
-                    kill['fallback'] = '{0} ({1}) killed {2} ({3}){4}'.format(killerName, killer['corporationName'], victimName, victim['corporationName'], allianceName)
+                        allianceName = ' ({0})'.format(victim['alliance_name'])
+                    kill['fallback'] = '{0} ({1}) killed {2} ({3}){4}'.format(killerName, killer['corporation_name'], victimName, victim['corporation_name'], allianceName)
                 else:
-                    kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporationName'])
+                    kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporation_name'])
                 kill['color'] = 'good'
                 damageTaken['title'] = "Damage dealt"
 
             kill['title'] = kill['fallback']
             kill['title_link'] = 'https://zkillboard.com/kill/{0}/'.format(kill_id)
-            kill['thumb_url'] = 'https://imageserver.eveonline.com/Render/{0}_64.png'.format(victim['shipTypeID'])
+            kill['thumb_url'] = 'https://imageserver.eveonline.com/Render/{0}_64.png'.format(victim['ship_type_id'])
             
-            damageTaken['value'] = locale.format('%d', victim['damageTaken'], grouping=True)
+            damageTaken['value'] = locale.format('%d', victim['damage_taken'], grouping=True)
             damageTaken['short'] = "true"
             
-            value = {'title': 'Value', 'value': locale.format('%d', record['zkb']['totalValue'], grouping=True) + ' ISK', 'short': False}
+            value = {'title': 'Value', 'value': locale.format('%d', record['zkb']['total_value'], grouping=True) + ' ISK', 'short': False}
             totalAttackers = {'title': 'Pilots involved', 'value': str(attackerCount), 'short': 'true'}
 
             mostDmg = {}
             if highestDealer and highestDealer['characterID'] != 0:
                 mostDmg['title'] = 'Most Damage'
-                mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(highestDealer['characterID'], highestDealer['characterName'], locale.format('%d', highestDmg, grouping=True))
+                mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(highestDealer['character_id'], highestDealer['character_name'], locale.format('%d', highestDmg, grouping=True))
                 mostDmg['short'] = "true"
             
-            solarSystemName,regionID,regionName,constellationName,security = systems.get_system_by_id(record['solarSystemID'])
+            solarSystemName,regionID,regionName,constellationName,security = systems.get_system_by_id(record['solar_system_id'])
             system = {'title': 'System', 'value': '<https://zkillboard.com/system/{systemID}|{systemName}> ({security:.1g}) / <https://zkillboard.com/region/{regionID}|{regionName}> / {constellationName}'.format(
-                systemID = record['solarSystemID'], 
+                systemID = record['solar_system_id'], 
                 systemName = solarSystemName, 
                 security = security,
                 regionName = regionName,
                 regionID = regionID,
                 constellationName = constellationName
             ), 'short': False}
-            ship = {'title': 'Ship', 'value': '{0}'.format(ships.get_ship_by_id(victim['shipTypeID'])), 'short': 'true'}
+            ship = {'title': 'Ship', 'value': '{0}'.format(ships.get_ship_by_id(victim['ship_type_id'])), 'short': 'true'}
             
             if config.config_show_participating:
-                row_damage = {'fallback': kill['fallback'], 'color': kill['color'], 'title': kill['title'], 'title_link': kill['title_link'], 'fields': [damageTaken, totalAttackers], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(victim['corporationID'])}
+                row_damage = {'fallback': kill['fallback'], 'color': kill['color'], 'title': kill['title'], 'title_link': kill['title_link'], 'fields': [damageTaken, totalAttackers], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(victim['corporation_id'])}
                 row_ship = {'color': kill['color'], 'fields': [mostDmg, ship], 'thumb_url': kill['thumb_url']}
                 row_value = {'color': kill['color'], 'fields': [value]}
                 row_system = {'color': kill['color'], 'fields': [system]}
                 attachment['attachments'] = [row_damage, row_ship, row_value, row_system]
                 i = 0
                 for attacker in killers:
-                    attacker_name = {'title': 'Attacker', 'value': '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(attacker['characterID'], attacker['characterName'], attacker['corporationName']), 'short': 'true'}
-                    attacker_damage = {'title': 'Damage Done', 'value': locale.format('%d', attacker['damageDone'], grouping=True), 'short': 'true'}
-                    attachment['attachments'].append({'color': kill['color'], 'fields': [attacker_name, attacker_damage], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(attacker['corporationID'])})
+                    attacker_name = {'title': 'Attacker', 'value': '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(attacker['character_id'], attacker['character_name'], attacker['corporation_name']), 'short': 'true'}
+                    attacker_damage = {'title': 'Damage Done', 'value': locale.format('%d', attacker['damage_done'], grouping=True), 'short': 'true'}
+                    attachment['attachments'].append({'color': kill['color'], 'fields': [attacker_name, attacker_damage], 'thumb_url': 'https://imageserver.eveonline.com/Corporation/{0}_64.png'.format(attacker['corporation_id'])})
                     i += 1
                     if i == 10:
                         break
