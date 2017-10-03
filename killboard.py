@@ -31,8 +31,8 @@ def run_killboard(config_type, config_id):
 
     for record in root:
         try:
-            kill_id = record['kill_id']
-            if str(kill_id) in handled_kills:
+            killmail_id = record['killmail_id']
+            if str(killmail_id) in handled_kills:
                 continue
             
             killers = []
@@ -92,7 +92,7 @@ def run_killboard(config_type, config_id):
                 damageTaken['title'] = "Damage dealt"
 
             kill['title'] = kill['fallback']
-            kill['title_link'] = 'https://zkillboard.com/kill/{0}/'.format(kill_id)
+            kill['title_link'] = 'https://zkillboard.com/kill/{0}/'.format(killmail_id)
             kill['thumb_url'] = 'https://imageserver.eveonline.com/Render/{0}_64.png'.format(victim['ship_type_id'])
             
             damageTaken['value'] = locale.format('%d', victim['damage_taken'], grouping=True)
@@ -144,7 +144,7 @@ def run_killboard(config_type, config_id):
             urllib2.urlopen(request_slack)
 
             time.sleep(2)
-            f.write('{0}\n'.format(kill_id))
+            f.write('{0}\n'.format(killmail_id))
         except urllib2.HTTPError as e:
             print "HTTPError in processing record: " + str(e.reason)
         except exceptions.KeyError as e:
