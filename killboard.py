@@ -148,11 +148,13 @@ def run_killboard(config_type, config_id):
                 kill['fields'] = [damageTaken, totalAttackers, mostDmg, ship, value, system]
                 attachment['attachments'] = [kill]
             
-            payload = json.dumps(attachment)
+            data = json.dumps(attachment)
             
-            data = urllib.urlencode({'payload': payload})
-            
-            request_slack = urllib2.Request(config.config_slack_url, data)
+            if not config.config_discord:
+                data = urllib.urlencode({'payload': data})
+                request_slack = urllib2.Request(config.config_slack_url, data)
+            else:
+                request_slack = urllib2.Request(config.config_slack_url, data, {'User-Agent': config.config_header})
             urllib2.urlopen(request_slack)
 
             time.sleep(2)

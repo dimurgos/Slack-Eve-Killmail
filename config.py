@@ -6,6 +6,7 @@ config_slack_url = 'https://hooks.slack.com/services/' # Slack integration code
 config_run_as_daemon = False
 config_show_participating = False # Shows the top 10 participating pilots on the kills that are part of your corporation or alliance
 config_extended_name = False # If True, shows (corporationName) on both victim and attacker
+config_discord = False # If True, properly posts for discord
 
 ### Locales
 #config_locale = 'English_United States' # Windows locale

@@ -29,6 +29,7 @@
 * config\_run\_as\_daemon = False # Tries to run as daemon instead of keeping the application alive
 * config\_show\_participating = False # True shows the top 10 participating pilots on the kills that are part of your corporation or alliance (default to False), see example below.
 * config\_extended\_name = False # If True, shows (corporationName) on both victim and attacker
+* config\_discord = False # If True, properly posts for discord
 
 ## Result
 * Every 20 minutes the list of kills over the last day will be posted in the configured Slack channel
