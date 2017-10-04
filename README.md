@@ -17,7 +17,7 @@
 		* Search your corp/alliance
 		* ID is in URL behind /corporation/ or /alliance/
 * If you haven't already, bind corporation API key to zkillboard to get all kills listed
-* If on ubuntu, copy or symlink scripts/ubuntu.init to /etc/init.d/kbbot and run `update-rc.d kbbot defaults`
+* If on ubuntu, copy or symlink scripts/ubuntu.init to /etc/init.d/kbbot and run `update-rc.d kbbot defaults` (also make sure the killboard.py and other files are located in/around /opt/Slack-Eve-Killmail/killboard.py)
 
 ## Configurable fields
 * config\_header = 'Slack-Eve-Killboard/1.0a https://github.com/dimurgos/Slack-Eve-Killmail' # header
@@ -29,7 +29,7 @@
 * config\_run\_as\_daemon = False # Tries to run as daemon instead of keeping the application alive
 * config\_show\_participating = False # True shows the top 10 participating pilots on the kills that are part of your corporation or alliance (default to False), see example below.
 * config\_extended\_name = False # If True, shows (corporationName) on both victim and attacker
-* config\_discord = False # If True, properly posts for discord
+* config\_discord = False # If True, properly posts for discord (also requires the slack_url to be a discord url ending with /slack)
 
 ## Result
 * Every 20 minutes the list of kills over the last day will be posted in the configured Slack channel
