@@ -53,7 +53,7 @@ def run_killboard(config_type, config_id):
             for attacker in record['attackers']:
                 if attacker['final_blow'] == 1:
                     killer = attacker
-                if attacker['character_id'] == 0 and attacker['faction_id'] != 0:
+                if 'character_id' not in attacker and attacker['faction_id'] != 0:
                     continue
                 else:
                     attackerCount += 1
@@ -71,11 +71,11 @@ def run_killboard(config_type, config_id):
             damageTaken = {}
             kill = {}
 
-            if killer['character_id'] == 0:
+            if 'character_id' not in killer:
                 killerName = killer['ship_type_id']
             else:
                 killerName = characters.get_character_by_id(killer['character_id'])
-            if victim['character_id'] == 0:
+            if 'character_id' not in victim:
                 victimName = victim['ship_type_id']
             else:
                 victimName = characters.get_character_by_id(victim['character_id'])
