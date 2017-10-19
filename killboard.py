@@ -17,7 +17,7 @@ import os
 import signal
 
 def run_killboard(config_type, config_id):
-    kills = 'https://zkillboard.com/api/{0}/{1}/pastSeconds/{2}/'.format(config_type, config_id, config.config_check)
+    kills = 'https://zkillboard.com/api/{0}/{1}/pastSeconds/{2}/orderDirection/asc/'.format(config_type, config_id, config.config_check)
 
     if config_type == 'corporationID':
        config_type = 'corporation_id'
