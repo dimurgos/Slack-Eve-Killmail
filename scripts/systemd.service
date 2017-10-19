@@ -1,0 +1,17 @@
+[Unit]
+Description=Killboard Bot
+Wants=network.target
+After=network.target
+
+[Service]
+ExecStart=/opt/Slack-Eve-Killmail/killboard.py
+WorkingDirectory=/opt/Slack-Eve-Killmail
+Nice=5
+NoNewPrivileges=true
+PrivateTmp=true
+InaccessibleDirectories=/home /root /sys /srv /media /lost+found
+ReadOnlyDirectories=/bin /lib /usr /etc /
+ReadWriteDirectories=/opt/Slack-Eve-Killmail
+
+[Install]
+WantedBy=multi-user.target
