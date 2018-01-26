@@ -8,6 +8,6 @@ def get_corporation_by_id(id):
         
     root = util.get_public_esi_data('corporations', id)
     
-    name = root['corporation_name']
+    name = root['name']
     corporation_list[id] = name
     return name
