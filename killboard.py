@@ -53,14 +53,14 @@ def run_killboard(config_type, config_id):
             for attacker in record['attackers']:
                 if attacker['final_blow'] == 1:
                     killer = attacker
-                if 'character_id' not in attacker and attacker['faction_id'] != 0:
+                if 'character_id' not in attacker and 'faction_id' in attacker:
                     continue
                 else:
                     attackerCount += 1
                 if attacker['character_id'] != 0 and attacker['damage_done'] > highestDmg:
                     highestDmg = attacker['damage_done']
                     highestDealer = attacker
-                if config.config_show_participating and attacker[config_type] == config_id:
+                if config.config_show_participating and config_type in attacker and attacker[config_type] == config_id:
                     character_name = characters.get_character_by_id(attacker['character_id'])
                     corporation_name = corporations.get_corporation_by_id(attacker['corporation_id'])
                     killers.append({'character_name': character_name, 'character_id': attacker['character_id'], 'corporation_name': corporation_name, 'corporation_id': attacker['corporation_id'], 'damage_done': attacker['damage_done']})
@@ -80,7 +80,7 @@ def run_killboard(config_type, config_id):
             else:
                 victimName = characters.get_character_by_id(victim['character_id'])
             
-            if victim[config_type] == config_id:
+            if config_type in victim and victim[config_type] == config_id:
                 if config.config_extended_name: 
                     if 'alliance_id' not in killer:
                         allianceName = ''
