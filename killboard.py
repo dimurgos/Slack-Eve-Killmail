@@ -110,6 +110,9 @@ def run_killboard(config_type, config_id):
             damageTaken['value'] = locale.format('%d', victim['damage_taken'], grouping=True)
             damageTaken['short'] = "true"
             
+            if config.config_minimum_value < record['zkb']['totalValue']:
+                continue
+            
             value = {'title': 'Value', 'value': locale.format('%d', record['zkb']['totalValue'], grouping=True) + ' ISK', 'short': False}
             totalAttackers = {'title': 'Pilots involved', 'value': str(attackerCount), 'short': 'true'}
 

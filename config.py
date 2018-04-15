@@ -8,6 +8,8 @@ config_show_participating = False # Shows the top 10 participating pilots on the
 config_extended_name = False # If True, shows (corporationName) on both victim and attacker
 config_discord = False # If True, properly posts for discord
 
+config_minimum_value = 0 # Minimum kill value
+
 ### Locales
 #config_locale = 'English_United States' # Windows locale
 config_locale = 'en_US' # Generic linux/mac locale
