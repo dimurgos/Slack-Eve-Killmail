@@ -53,7 +53,7 @@ def run_killboard(config_type, config_id):
             for attacker in record['attackers']:
                 if attacker['final_blow'] == 1:
                     killer = attacker
-                if 'character_id' not in attacker and 'faction_id' in attacker:
+                if 'character_id' not in attacker:
                     continue
                 else:
                     attackerCount += 1
